@@ -1,6 +1,8 @@
 resource "aws_vpc" "this" {
-  cidr_block = var.vpc_cidr
+  for_each = var.vpcs
+
+  cidr_block = each.value.cidr_block
   tags = {
-      Name = var.tags
+      Name = each.key 
     }
 }
