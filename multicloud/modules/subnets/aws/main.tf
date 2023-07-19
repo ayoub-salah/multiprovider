@@ -1,3 +1,4 @@
+
 resource "aws_subnet" "this" {
   for_each = var.subnets
 
@@ -10,7 +11,7 @@ resource "aws_subnet" "this" {
       Name = each.key
     }
 }
-
+/*
 //routage:
 resource "aws_route_table" "public" {
   vpc_id = var.vpc_id
@@ -41,3 +42,4 @@ resource "aws_route_table_association" "public" {
   subnet_id     = each.value.id
   route_table_id = aws_route_table.public.id
 }
+ */

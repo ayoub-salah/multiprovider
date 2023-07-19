@@ -1,4 +1,4 @@
-resource "aws_instance" "this" {
+/*resource "aws_instance" "this" {
   for_each      = var.instances
 
   ami           = each.value.ami
@@ -11,3 +11,4 @@ resource "aws_instance" "this" {
     Name = each.key
   }
 }
+*/

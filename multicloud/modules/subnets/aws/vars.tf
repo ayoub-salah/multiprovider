@@ -18,9 +18,10 @@ variable "internet_gateway_id" {
   type        = string
   default     = null
 }
-
+/*
 variable "nat_gateway_id" {
   description = "The ID of the NAT Gateway"
   type        = string
   default     = null
 }
+*/

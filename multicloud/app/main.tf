@@ -1,3 +1,48 @@
+/*
+module "vpc_azure" {
+  count = var.deploy_azure ? 1 : 0
+  source = "../modules/vpc/azure"
+  //rg     = var.rg
+  vpcs   = var.vpcs
+}
+*/
+
+module "vpc_aws" {
+  count = var.deploy_aws ? 1 : 0
+  source  = "../modules/vpc/aws"
+  vpcs    = var.vpcs
+}
+module "subnets_public" {
+  count = var.deploy_aws ? 1 : 0
+
+  source  = "../modules/subnets/aws"
+  vpc_id  = module.vpc_aws[0].vpc_ids[var.vpc_id]
+  internet_gateway_id = module.vpc_aws[0].internet_gateway_ids[var.vpc_id] //car les deux map ils ont la meme clé pour chaque vpc une gateway
+  subnets = var.subnets //on doit la changer ---> subnets_public
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 module "aws_vpc" {
   source  = "../modules/vpc/aws"
 
@@ -43,3 +88,4 @@ module "ec2" {
     instance_2 = { ami = "ami-022e1a32d3f742bd8", instance_type = "t2.micro", subnet_id = module.subnets_public.subnet_ids["public_subnet_1"]},
   }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 resource "aws_eip" "this" {
   domain = "vpc"
   tags = {
@@ -12,3 +13,4 @@ resource "aws_nat_gateway" "this" {
     Name = "${var.name}_nat"
   }
 }
+*/

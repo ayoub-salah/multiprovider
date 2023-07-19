@@ -1,3 +1,4 @@
+/*
 variable "instances" {
   description = "Map of instances to create"
   type = map(object({
@@ -7,3 +8,4 @@ variable "instances" {
   }))
   default = {}
 }
+*/
