@@ -10,14 +10,6 @@ variable "deploy_azure" {
   default     = false
 }
 
-/*
-variable "rg" {
-  description = "Nom du groupe de ressources Azure"
-  type        = string
-  default     = "my-resource-group"
-}
-*/
-
 variable "vpcs" {
   description = "Configuration des VPC"
   type        = map(object({
@@ -29,22 +21,22 @@ variable "vpcs" {
     vpc1 = {
       address_space = ["192.168.1.0/24"]
       location      = "East US"
-      resource_group = "my-resource-group"
-
+      resource_group = "1-48b5954a-playground-sandbox"
     }
     vpc2 = {
       address_space = ["192.168.2.0/24"]
       location      = "East US"
-      resource_group = "my-resource-group"
+      resource_group = "1-48b5954a-playground-sandbox"
     }
     vpc3 = {
       address_space = ["192.168.3.0/24"]
       location      = "East US"
-      resource_group = "my-resource-group"
+      resource_group = "1-48b5954a-playground-sandbox"
     }
   }
 }
 
+/*
 variable "vpc_id" {
   description = "VPC ID to create subnets in"
   type        = string
@@ -68,3 +60,4 @@ variable "subnets" {
     public_subnet_2  = { cidr_block = "192.168.1.64/26", availability_zone = "us-east-1b", map_public_ip = true },
   }
 }
+*/
