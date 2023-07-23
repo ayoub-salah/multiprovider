@@ -10,8 +10,8 @@ module "vpc_aws" {
   source  = "../modules/vpc/aws"
   vpcs    = var.vpcs
 }
-/*
-module "subnets_public" {
+
+module "subnets_public_aws" {
   count = var.deploy_aws ? 1 : 0
 
   source  = "../modules/subnets/aws"
@@ -19,16 +19,14 @@ module "subnets_public" {
   internet_gateway_id = module.vpc_aws[0].internet_gateway_ids[var.vpc_id] //car les deux map ils ont la meme clé pour chaque vpc une gateway
   subnets = var.subnets //on doit la changer ---> subnets_public
 }
-*/
+module "subnets_public_azure" {
+  count = var.deploy_azure ? 1 : 0
 
-
-
-
-
-
-
-
-
+  source  = "../modules/subnets/azure"
+  vpc_name  = module.vpc_azure[0].vpc_name[var.vpc_name]
+  rg = var.rg
+  subnets = var.subnets //on doit la changer ---> subnets_public
+}
 
 
 

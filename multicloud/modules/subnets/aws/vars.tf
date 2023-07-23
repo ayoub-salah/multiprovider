@@ -1,7 +1,7 @@
 variable "subnets" {
   description = "Map of subnets to create"
   type        = map(object({
-    cidr_block        = string
+    cidr_block        = list(string)
     availability_zone = string
     map_public_ip     = bool
   }))

@@ -4,3 +4,9 @@ output vpc_name {
   }
   description = "Vpc outputs"
 }
+/*
+output "vpc_names" {
+  description = "The names of the VPCs"
+  value = { for k, v in aws_vpc.this : k => v.tags.Name }
+}
+*/

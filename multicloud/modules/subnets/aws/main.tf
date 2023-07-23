@@ -1,16 +1,14 @@
-
 resource "aws_subnet" "this" {
   for_each = var.subnets
-
   vpc_id                  = var.vpc_id
-  cidr_block              = each.value.cidr_block
+  cidr_block              = each.value.cidr_block[0]
   map_public_ip_on_launch = each.value.map_public_ip
   availability_zone       = each.value.availability_zone
-
   tags = {
       Name = each.key
     }
 }
+
 /*
 //routage:
 resource "aws_route_table" "public" {
@@ -42,4 +40,4 @@ resource "aws_route_table_association" "public" {
   subnet_id     = each.value.id
   route_table_id = aws_route_table.public.id
 }
- */
+*/
