@@ -1,11 +1,12 @@
-variable "rg" {
-  type    = string
-}
+# variable "rg" {
+#   type    = string
+# }
 variable "vpcs" {
     type            = map(object({
     name            = string
     address_space   = list(string)
     location        = string
+    resource_group  = string
    }))
 }
 # variable "nics" {

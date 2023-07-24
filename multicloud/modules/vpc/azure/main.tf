@@ -1,8 +1,8 @@
 resource "azurerm_virtual_network" "vNet" {
 
   for_each            = var.vpcs
-  name                = each.value.name
-  resource_group_name = var.rg
+  name                = each.key
+  resource_group_name = each.value.resource_group
   location            = each.value.location
   # address_space     = ["10.0.0.0/16"]
   address_space       = each.value.address_space
