@@ -1,8 +1,7 @@
 resource "azurerm_subnet" "subnet" {
   for_each               = var.subnets
-
-  virtual_network_name   = var.vpc_name
-  resource_group_name    = var.rg
-  address_prefixes       = each.value.cidr_block
   name                   = each.key
+  address_prefixes       = each.value.cidr_block
+  resource_group_name    = each.value.resource_group
+  virtual_network_name   = each.value.vpc_name
 }
