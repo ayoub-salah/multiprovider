@@ -1,0 +1,7 @@
+azure ====> aws
+###############
+
+
+location ===> availabilityzone 
+address_prefixes ===> cidr_block
+vnet  ===========> vpc
