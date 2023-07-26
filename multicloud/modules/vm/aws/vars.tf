@@ -1,5 +1,6 @@
-variable "instances_aws" {
-  description = "Map of instances to create"
+variable "instances" {
+  }
+  /*description = "Map of instances to create"
   type = map(object({
     ami           = string
     instance_type = string
@@ -7,10 +8,13 @@ variable "instances_aws" {
   }))
   default = {}
 }
+*/
 
   variable "subnet_ids" {
-    description = "The IDs of the subnets"
+  }
+  /*  description = "The IDs of the subnets"
     type = map(string)
     
     default = {}
   }
+  */

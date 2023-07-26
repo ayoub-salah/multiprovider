@@ -1,5 +1,5 @@
 resource "aws_instance" "this" {
-  for_each      = var.instances_aws
+  for_each      = var.instances
 
   subnet_id     = var.subnet_ids[each.value.subnet_name]
   ami           = each.value.ami
