@@ -14,6 +14,22 @@ provider "azurerm" {
   features {}
 }
 ### this is azure main root module 
+# terraform {
+# #   required_providers {
+# #     azurerm = {
+# #       source  = "hashicorp/azurerm"
+# #       version = "=3.0.0"
+# #     }
+# #   }
+# # }
+
+# provider "azurerm" {
+#   # Configuration options
+#   subscription_id            = var.subscription_id
+#   skip_provider_registration = true
+#   features {}
+# }
+
 # module "vpc" {
 #   source = "../modules/vpc/azure"
 #   # rg     = var.rg
@@ -37,7 +53,7 @@ provider "azurerm" {
 # }
 
 # module "subnet" {
-#   source = "../modules/subnets/azure"
+#   source = "../modules/subnet/azure"
 #   # rg     = var.rg
 #   subnets = {
 #     subnet1 = {
@@ -61,6 +77,7 @@ provider "azurerm" {
 
 #   vms = {
 #     "vm1" = {
+#       name                            = "myVm1"
 #       resource_group                  = var.rg
 #       availability_zone               = "East US"
 #       size                            = "Standard_F2"
@@ -72,20 +89,30 @@ provider "azurerm" {
 #       subnet_id                              = module.subnet.subnet_ids["subnet1"]
 #       private_ip_address_alavailability_zone = "Dynamic"
 #       myscript                               = file("./myScript.sh")
+#       rule = {
+#         priority   = 120,
+#         open_ports = tolist(["80"])
+#       }
 #     },
 #     "vm2" = {
+#       name                                   = "myVm2"
 #       resource_group                         = var.rg
 #       availability_zone                      = "East US"
 #       size                                   = "Standard_F2"
 #       admin_username                         = "adminuser"
-#       disable_password_authentication        = faalse
+#       disable_password_authentication        = false
 #       admin_password                         = "Abc_123###"
 #       public_ip                              = true
 #       subnet_id                              = module.subnet.subnet_ids["subnet1"]
 #       private_ip_address_alavailability_zone = "Dynamic"
 #       myscript                               = file("./myScript.sh")
+#       rule = {
+#         priority   = 130,
+#         open_ports = tolist(["*"])
+#       }
 #     },
 #     "vm3" = {
+#       name                                   = "myVm3"
 #       resource_group                         = var.rg
 #       availability_zone                      = "East US"
 #       size                                   = "Standard_F2"
@@ -96,21 +123,19 @@ provider "azurerm" {
 #       subnet_id                              = module.subnet.subnet_ids["subnet2"]
 #       private_ip_address_alavailability_zone = "Dynamic"
 #       myscript                               = file("./myScript.sh")
+#       rule = {
+#         priority   = 140,
+#         open_ports = tolist([80, 252])
+#       }
+
 #     }
 #   }
-#   security_rule = [
-#     # dynamic {} rule here 
-#     {
-#       name                       = "mySecRule"
-#       priority                   = 100
-#       direction                  = "Inbound"
-#       access                     = "Allow"
-#       protocol                   = "Tcp"
-#       source_port_range          = "*"
-#       destination_port_range     = "*"
-#       source_address_prefix      = "*"
-#       destination_address_prefix = "*"
-#     }
-#   ]
 # }
+
+
+
+
+
+
+
 
