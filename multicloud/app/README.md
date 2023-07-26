@@ -89,3 +89,70 @@ output "vm_ip_out" {
   value = module.my_vms.vm_ips   
 }
 ```
+
+# AWS Terraform Modules
+
+This repository contains modules for deploying a multi-tier infrastructure on Amazon Web Services (AWS) using Terraform.
+
+## AWS VPC
+
+Here is the block you need to implement in your Terraform main configuration file (`main.tf`) to create the desired VPC resources. Make sure to change the variables according to your requirements.
+
+```
+# VPC module call
+module "vpc_aws" {
+  source  = "../modules/vpc/aws"
+
+  vpcs = {
+    vpc1 = {cidr_block = ["192.168.1.0/24"]},
+    vpc2 = {cidr_block = ["192.168.2.0/24"]},
+    vpc3 = {cidr_block = ["192.168.3.0/24"]},
+  }
+}
+```
+
+## AWS Public Subnets
+
+Here is the block you need to implement in your `main.tf` file to create the desired public subnet resources. Note that you will need to provide the `vpc_ids`, `internet_gateway_ids`, and `route_ids` from the VPC module.
+
+```
+# Public Subnet module call
+module "subnets_public_aws" {
+  source  = "../modules/subnets/aws"
+
+  vpc_ids = module.vpc_aws.vpc_ids
+  internet_gateway_ids = module.vpc_aws.internet_gateway_ids
+  route_ids = module.vpc_aws.route_table_ids
+  
+  subnets = {
+    public_subnet_1  = { cidr_block = ["192.168.1.0/26"], availability_zone = "us-east-1a", map_public_ip = true, vpc_name = "vpc1" },
+    public_subnet_2  = { cidr_block = ["192.168.1.64/26"], availability_zone = "us-east-1b", map_public_ip = true, vpc_name = "vpc1"},
+  }
+}
+```
+
+## AWS EC2 Instances (Virtual Machines)
+
+Here is the block you need to implement in your `main.tf` file to create the desired EC2 instances (VMs). Make sure to change the `instances` configuration according to your requirements.
+
+```
+# EC2 Instances module call
+module "vms_aws" {
+  source = "../modules/vm/aws"
+
+  vpc_name = "vpc1"
+  vpc_ids = module.vpc_aws.vpc_ids
+  subnet_ids = module.subnets_public_aws.subnet_ids
+  
+  instances = {
+    instance_1 = { ami = "ami-022e1a32d3f742bd8", instance_type = "t2.micro", subnet_name = "public_subnet_1", public_ip = true, ports = [22,80,443] },
+    instance_2 = { ami = "ami-022e1a32d3f742bd8", instance_type = "t2.micro", subnet_name = "public_subnet_1", public_ip = true, ports = [22,80,443] },
+  }
+}
+```
+
+Remember, always verify that your configurations meet your requirements and comply with your company or organization's standards and policies.
+
+For any further clarifications or modifications, feel free to raise an issue or submit a pull request.
+
+Happy Terraforming!
