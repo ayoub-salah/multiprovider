@@ -6,9 +6,3 @@ output vpc_name {
 }
 
 
-# output "nic_ids" {
-#   value = azurerm_network_interface.nic[*].id
-# }
-# output "test" {
-#   value = {for k , v  in azurerm_network_interface.nic : k => v.location}
-# }
