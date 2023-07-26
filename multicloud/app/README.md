@@ -90,13 +90,15 @@ output "vm_ip_out" {
 }
 ```
 
-# AWS Terraform Modules
+## AWS Terraform Modules
 
 This repository contains modules for deploying a multi-tier infrastructure on Amazon Web Services (AWS) using Terraform.
 
 ## AWS VPC
 
 Here is the block you need to implement in your Terraform main configuration file (`main.tf`) to create the desired VPC resources. Make sure to change the variables according to your requirements.
+
+**Important: Don't forget to add the necessary AWS provider block in the `providers.tf` file located in the same directory as your `main.tf` file.**
 
 ```
 # VPC module call
