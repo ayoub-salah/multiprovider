@@ -1,33 +1,42 @@
-Root Module for Azure Infrastructure Deployment
-This Terraform root module is used to deploy an Azure infrastructure with Virtual Networks, Subnets, and Virtual Machines (VMs). It makes use of custom modules to organize and simplify the provisioning process. Below is a brief overview of the root module and its components.
-
-Files
-main.tf: The main Terraform configuration file that defines the overall infrastructure and uses custom modules to create resources such as Virtual Networks, Subnets, and Virtual Machines.
-
-variables.tf: This file contains the input variables used in the root module. These variables allow you to customize the deployment by providing values for the resource group, subscription ID, location, and other parameters.
-
-output.tf: The outputs file defines the information that will be displayed after the Terraform deployment. It includes the names of the Virtual Networks (VPCs), the IDs of the Subnets, and the public and private IP addresses of the Virtual Machines.
+/app/ (Root Module)
+Overview
+The root module of the Terraform project for Azure, allowing you to create a unified infrastructure consisting of Virtual Networks (VPCs), subnets, and Virtual Machines (VMs) in Azure.
 
 Usage
-To deploy your Azure infrastructure using this root module, follow these steps:
+1. First, define your desired variables in var.tf .
 
-Customize the variables in variables.tf to match your Azure environment and requirements. Provide the necessary values for the resource group, subscription ID, location, etc.
+2. Create the Azure provider configuration in main.tf .
 
-Ensure you have the required Azure credentials and permissions to create resources in the target Azure subscription.
+3. Use the VPC module to create Virtual Networks .
+ 
+4. Use the Subnet module to create subnets in the Virtual Networks .
 
-Run terraform init to initialize the working directory and download the necessary Azure provider plugins.
-
-Use terraform plan to preview the changes and resources that will be created based on your configuration.
-
-If the plan looks correct, execute terraform apply to provision the Virtual Networks, Subnets, and Virtual Machines on Azure.
-
-After successful deployment, Terraform will display the outputs specified in output.tf, including the names of the created Virtual Networks, the IDs of the Subnets, and the IP addresses of the Virtual Machines.
-
-Note
-Please review your configurations carefully before executing Terraform commands to avoid unintended consequences. Ensure that you have properly set up your Azure credentials and have the necessary permissions to create resources in the target Azure subscription.
-
-For more information about Terraform and the Azure provider, refer to the official documentation:
-
-Terraform: https://www.terraform.io/docs/index.html
-Azure Provider for Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
-Happy provisioning!
+5. Use the VM module to create Virtual Machines in the subnets .
+   
+<h2>Variables</h2>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>rg</td>
+    <td>The name of the resource group to create</td>
+    <td>string</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td>subscription_id</td>
+    <td>The Azure subscription ID</td>
+    <td>string</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td>availability_zone</td>
+    <td>The desired availability zone</td>
+    <td>string</td>
+    <td>"East US"</td>
+  </tr>
+</table>
