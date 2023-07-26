@@ -1,72 +1,27 @@
 # azure provider 
-Azure Infrastructure Deployment with Terraform
-This project aims to simplify the deployment of Azure infrastructure using Terraform. The project is organized into custom modules for Virtual Networks (VPCs), Subnets, and Virtual Machines (VMs). These modules allow for easy configuration and management of Azure resources, providing a seamless experience for provisioning your infrastructure.
 
-Table of Contents
-Introduction
-Modules
-Usage
-Prerequisites
-Getting Started
-Customizing the Deployment
-Terraform Commands
-Contributing
-License
-Introduction
-The goal of this project is to streamline the process of creating Azure resources such as Virtual Networks, Subnets, and Virtual Machines. Terraform, an infrastructure as code (IaC) tool, is used to define the desired state of the infrastructure and deploy it on the Azure cloud platform.
+This Terraform project aims to create a unified infrastructure on Azure, consisting of Virtual Networks (VPCs), subnets, and Virtual Machines (VMs). The project is organized into the following modules:
 
-Modules
-The project is divided into the following custom modules:
+/modules/vpc/azure: This module is responsible for creating Azure Virtual Networks (VPCs) and supports creating multiple VPCs with custom attributes.
 
-VPC Module: This module is responsible for creating Virtual Networks (VPCs) on Azure. It allows you to define multiple VPCs with different configurations.
+/modules/subnet/azure: This module is used to create subnets in the previously created Virtual Networks. It allows creating multiple subnets with configurable CIDR blocks and associations with existing VPCs.
 
-Subnet Module: The Subnet module handles the creation of Subnets within the specified Virtual Networks. You can create multiple subnets with varying configurations using this module.
+/modules/vm/azure: This module handles the creation of Azure Virtual Machines (VMs). It supports creating multiple VMs with custom configurations, such as size, network settings, and custom initialization data.
 
-VM Module: This module is used to deploy Linux Virtual Machines on Azure. It enables you to define multiple VM instances with custom settings.
+Each module has its own README.md with detailed information on how to use it, including input variables, outputs, and usage examples.
 
-Usage
-To use this project for deploying your Azure infrastructure, follow the steps below:
+Possible Improvements
+/modules/vpc/azure:
 
-Prerequisites: Ensure that you have the necessary credentials and permissions to create resources in your Azure subscription.
+Support custom tags for Virtual Networks to add additional metadata , dynamic blocks and nested dynamic blocks .
+Implement route tables and peering options for inter-VPC communication.
+/modules/subnet/azure:
 
-Customize the Configuration: Modify the variables.tf files in each module to provide the required input values for your infrastructure. Adjust the resource names, locations, IP address ranges, and other settings as per your needs.
+Allow creating Network Security Groups (NSGs) and associating them with subnets.
+Support associating subnets with application gateways or load balancers.
+/modules/vm/azure:
+Add dynamic Operating System and hardware ressources like : Ram , disk_type , group of vm must join (active directory)
+Implement data disk creation options for VMs with additional storage requirements.
+Dynamically choose between ssh or password . 
 
-Initialize Terraform: Run terraform init to initialize the working directory and download the required Azure provider plugins.
-
-Plan Deployment: Use terraform plan to preview the changes and resources that will be created based on your configuration.
-
-Deploy Infrastructure: If the plan looks correct, execute terraform apply to provision the Azure infrastructure.
-
-Prerequisites
-Terraform: Install Terraform from the official website - https://www.terraform.io/downloads.html
-Azure Subscription: You must have an active Azure subscription with appropriate permissions to create resources.
-Getting Started
-Clone this project repository to your local machine:
-
-bash
-Copy code
-git clone https://github.com/<your-username>/azure-infrastructure-deployment.git
-cd azure-infrastructure-deployment
-Customize the module configurations in each module's variables.tf file to match your requirements.
-
-Initialize Terraform in the project root directory:
-
-csharp
-Copy code
-terraform init
-Use Terraform to plan and apply the infrastructure deployment:
-
-terraform plan
-terraform apply
-Customizing the Deployment
-To customize the deployment, modify the variables in the module's variables.tf files. Each module has specific variables for configuring the resources it provisions, such as VPCs, Subnets, and Virtual Machines. Refer to the respective variables.tf files for more details.
-
-Terraform Commands
-Here are some useful Terraform commands for managing your infrastructure:
-
-terraform init: Initialize the working directory and download provider plugins.
-terraform plan: Preview the changes to be applied to the infrastructure.
-terraform apply: Apply the changes and create the Azure resources.
-terraform destroy: Destroy all created resources and clean up the infrastructure.
-Contributing
-Contributions to this project are welcome. If you encounter any issues or have suggestions for improvements, please submit a pull request or open an issue on the project repository.
+Overall, this Terraform project is a great step towards creating a unified infrastructure on Azure, making it easier to manage resources and deploy applications across different cloud providers. If you have any questions or need further assistance, feel free to ask!
