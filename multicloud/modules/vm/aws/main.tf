@@ -42,7 +42,7 @@ resource "aws_instance" "this" {
   ami           = each.value.ami
   instance_type = each.value.instance_type
   associate_public_ip_address = each.value.public_ip
-  user_data = file("./user_data.sh")
+  user_data = file("./aws_script.sh")
   key_name = "deployer-key"
   vpc_security_group_ids = [aws_security_group.security_group[each.key].id]
   tags = {
