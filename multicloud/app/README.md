@@ -178,12 +178,13 @@ Before using these modules, ensure you have the following prerequisites:
 
    ```hcl
    subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
-   Usage
+  Usage
 To use these modules, include the following blocks in your Terraform configuration files:
-VPC
+
+Azure VPC
 # VPC module call
-module "my_vpc" {
-  source = "../modules/vpc/azure"
+module "azure_vpc" {
+  source = "path/to/azure/modules/vpc"
 
   # VPCs Input
   vpcs = {
@@ -204,11 +205,11 @@ module "my_vpc" {
     }
   }
 }
-Subnets
+Azure Subnets
 # Subnet module call
-module "my_subnet" {
-  source = "../modules/subnets/azure"
-  depends_on = [module.my_vpc] # This module starts after the VPC module finishes executing
+module "azure_subnet" {
+  source = "path/to/azure/modules/subnets"
+  depends_on = [module.azure_vpc] # This module starts after the VPC module finishes executing
 
   # Subnets Input
   subnets = {
@@ -224,11 +225,11 @@ module "my_subnet" {
     }
   }
 }
-VMs
+Azure VMs
 # VM module call
-module "my_vms" {
-  source = "../modules/vm/azure"
-  depends_on = [module.my_vpc, module.my_subnet] # This module starts after the VPC & Subnet modules finish executing
+module "azure_vms" {
+  source = "path/to/azure/modules/vm"
+  depends_on = [module.azure_vpc, module.azure_subnet] # This module starts after the VPC & Subnet modules finish executing
 
   # VMs Input
   vms = {
@@ -262,9 +263,10 @@ module "my_vms" {
 }
 
 # Output of the VMs Public IPs
-output "vm_ip_out" {
-  value = module.my_vms.vm_public_ips
+output "azure_vm_ip_out" {
+  value = module.azure_vms.vm_public_ips
 }
-For any further clarifications or modifications, feel free to raise an issue or submit a pull request.
-
 Happy Terraforming!
+
+
+
