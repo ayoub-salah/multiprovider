@@ -164,10 +164,23 @@ Happy Terraforming!
 This repository contains modules for deploying a multi-tier infrastructure on Microsoft Azure using Terraform.
 
 
-Azure Virtual Networks (VPC)
-To create Azure Virtual Networks (VPCs) with customizable configurations, use the following block in your Terraform main configuration file (main.tf). Don't forget to change the variables according to your requirements.
+## Prerequisites
 
-Important: Ensure you have provided your credentials file as app/creds.json and define the necessary Azure provider block in the providers.tf file located in the same directory as your main.tf file.
+Before using these modules, ensure you have the following prerequisites:
+
+1. **Terraform**: Install Terraform on your local machine. You can download it from the official website: https://www.terraform.io/downloads.html
+
+2. **Azure CLI**: Install the Azure CLI on your local machine to authenticate with Azure. You can download it from the official website: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+
+3. **Azure Service Principal**: Create an Azure Service Principal to authenticate Terraform with your Azure subscription. Make sure to store the credentials securely.
+
+4. **Credentials File**: Create a file named `terraform.tfvars` in this directory and provide the required variables as mentioned in the modules' input section. For example:
+
+   ```hcl
+   subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
+   Usage
+To use these modules, include the following blocks in your Terraform configuration files:
+VPC
 # VPC module call
 module "my_vpc" {
   source = "../modules/vpc/azure"
@@ -175,85 +188,83 @@ module "my_vpc" {
   # VPCs Input
   vpcs = {
     "vpc1" = {
+      name = "vpc1"
       address_space = ["10.0.0.0/16"]
-      resource_group_name = "my_resource_group1"
+      resource_group_name = "my_rg1"
     },
     "vpc2" = {
-      address_space = ["192.168.0.0/16"]
-      resource_group_name = "my_resource_group2"
+      name = "vpc2"
+      address_space = ["10.1.0.0/16"]
+      resource_group_name = "my_rg2"
     },
     "vpc3" = {
-      address_space = ["172.16.0.0/16"]
-      resource_group_name = "my_resource_group3"
+      name = "vpc3"
+      address_space = ["10.2.0.0/16"]
+      resource_group_name = "my_rg3"
     }
   }
 }
-Azure Subnets
-To create Azure subnets within existing VPCs, use the following block in your main.tf file. Make sure to provide the vpc_name parameter based on the VPC names defined in the VPC module block.
+Subnets
 # Subnet module call
 module "my_subnet" {
   source = "../modules/subnets/azure"
-  depends_on = [module.my_vpc]  # This module starts after the VPC module finishes executing
-  
+  depends_on = [module.my_vpc] # This module starts after the VPC module finishes executing
+
   # Subnets Input
   subnets = {
     "subnet1" = {
-      vpc_name = "vpc2"
-      cidr_block = ["10.0.1.0/24"]
+      name = "subnet1"
+      address_prefix = "10.0.1.0/24"
+      vpc_name = "vpc1"
     },
     "subnet2" = {
+      name = "subnet2"
+      address_prefix = "10.0.2.0/24"
       vpc_name = "vpc1"
-      cidr_block = ["10.0.2.0/24"]
     }
   }
 }
-Azure Virtual Machines (VMs)
-To create Azure Virtual Machines (VMs) with customizable configurations, use the following block in your main.tf file. Make sure to change the vms configuration according to your requirements.
+VMs
 # VM module call
 module "my_vms" {
   source = "../modules/vm/azure"
-  depends_on = [module.my_vpc, module.my_subnet]  # This module starts after VPC & Subnet modules finish executing
-  network = "vpc2"  # VPC name
+  depends_on = [module.my_vpc, module.my_subnet] # This module starts after the VPC & Subnet modules finish executing
 
   # VMs Input
   vms = {
     "vm1" = {
-      vm_size = "Standard_B1s"
-      subnet_name = "subnet1"
-      os_disk_size_gb = 30
-      image_publisher = "Canonical"
-      image_offer = "UbuntuServer"
-      image_sku = "18.04-LTS"
+      name = "vm1"
+      vm_size = "Standard_B2ms"
       admin_username = "azureuser"
-      admin_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..."
+      admin_password = var.password
+      os_disk_size_gb = 30
+      subnet_name = "subnet1"
+      resource_group_name = "my_rg1"
+      availability_zone = "1"
       tags = {
-        Environment = "Production"
-        Project = "MyApp"
+        environment = "production"
       }
     },
     "vm2" = {
-      vm_size = "Standard_DS1_v2"
-      subnet_name = "subnet1"
-      os_disk_size_gb = 30
-      image_publisher = "Canonical"
-      image_offer = "UbuntuServer"
-      image_sku = "18.04-LTS"
+      name = "vm2"
+      vm_size = "Standard_B2s"
       admin_username = "azureuser"
-      admin_ssh_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..."
+      admin_password = var.password
+      os_disk_size_gb = 30
+      subnet_name = "subnet2"
+      resource_group_name = "my_rg1"
+      availability_zone = "1"
       tags = {
-        Environment = "Development"
-        Project = "MyApp"
+        environment = "staging"
       }
     }
   }
 }
 
-# Output of the VMs public IPs
+# Output of the VMs Public IPs
 output "vm_ip_out" {
   value = module.my_vms.vm_public_ips
 }
-Remember to always verify that your configurations meet your requirements and comply with your company or organization's standards and policies.
-
 For any further clarifications or modifications, feel free to raise an issue or submit a pull request.
 
 Happy Terraforming!
