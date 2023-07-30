@@ -141,3 +141,139 @@ resource "azurerm_subnet_nat_gateway_association" "subnetNatAssoc" {
   subnet_id      = module.subnet.subnet_ids["subnet2"]
   nat_gateway_id = azurerm_nat_gateway.nat.id
 }
+
+resource "azurerm_public_ip" "agwIP" {
+  name                = "agwPubIPterraform"
+  resource_group_name = var.rg
+  location            = var.availability_zone
+  allocation_method   = "Static"
+  sku = "Standard"
+}
+
+locals {
+  backend_address_pool_name      = "${module.vpc.vpc_name["vpc1"]}-backendPool"
+  frontend_port_name             = "${module.vpc.vpc_name["vpc1"]}-feport"
+  frontend_ip_configuration_name = "${module.vpc.vpc_name["vpc1"]}-feip"
+  http_setting_name              = "${module.vpc.vpc_name["vpc1"]}-be-htst"
+  listener_name                  = "${module.vpc.vpc_name["vpc1"]}-httplstn"
+  request_routing_rule_name      = "${module.vpc.vpc_name["vpc1"]}-rqrt"
+  redirect_configuration_name    = "${module.vpc.vpc_name["vpc1"]}-rdrcfg"
+}
+
+
+resource "azurerm_application_gateway" "network" {
+  name                = "myAppgatewayTerraform"
+  resource_group_name = var.rg
+  location            = var.availability_zone
+  sku {
+    name     = "Standard_v2"
+    tier     = "Standard_v2"
+    capacity = 2
+  }
+  # autoscale_configuration {
+  #   min_capacity = 0
+  #   max_capacity = 10
+  # }
+  gateway_ip_configuration {
+    name      = "my-gateway-ip-configuration"
+    subnet_id = module.subnet.subnet_ids["subnet5"]
+  }
+
+  frontend_port {
+    name = local.frontend_port_name
+    port = 80
+  }
+
+  frontend_ip_configuration {
+    name                 = local.frontend_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.agwIP.id
+    # subnet_id = module.subnet.subnet_ids["subnet2"]
+    private_ip_address_allocation = "Dynamic"
+  }
+
+  backend_address_pool {
+
+    name = local.backend_address_pool_name // here i must do changes to map vms private ips 
+    # ip_addresses = [azurerm_public_ip.PublicIP[0].ip_address, azurerm_public_ip.PublicIP[1].ip_address]
+    # ip_addresses = azurerm_network_interface.nic[0].ip_configuration[0].subnet_id
+    ip_addresses = ["10.1.3.4"]
+  }
+
+  backend_http_settings {
+    name                  = local.http_setting_name
+    cookie_based_affinity = "Disabled"
+    #path                                = "/"
+    port                                = 80
+    protocol                            = "Http"
+    request_timeout                     = 20
+    pick_host_name_from_backend_address = true
+    probe_name                          = "myProbe"
+
+
+  }
+  http_listener {
+    name                           = local.listener_name
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name
+    protocol                       = "Http"
+  }
+
+  request_routing_rule {
+    name                       = local.request_routing_rule_name
+    rule_type                  = "Basic"
+    http_listener_name         = local.listener_name
+    backend_address_pool_name  = local.backend_address_pool_name
+    backend_http_settings_name = local.http_setting_name
+    priority                   = 1
+  }
+  probe {
+    # host                                      = "127.0.0.1"
+    name                                      = "myProbe"
+    interval                                  = 30
+    protocol                                  = "Http"
+    path                                      = "/"
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
+    pick_host_name_from_backend_http_settings = true
+
+  }
+
+   
+}
+
+
+
+
+resource "azurerm_monitor_action_group" "actionGrp" {
+  name                = "monitor-actiongroup"
+  resource_group_name = var.rg
+
+  short_name = "myAct"
+
+  email_receiver {
+    name          = "mailTosend"
+    email_address = "sidahmed.tafifet@infraxcode.com"
+  }
+}
+resource "azurerm_monitor_metric_alert" "metric" {
+  name                = "monitor-metricalert"
+  resource_group_name = var.rg
+  scopes              = [azurerm_application_gateway.network.id]
+  description         = "Action will be triggered when more than 10 request/minute  to the app."
+
+  criteria {
+    metric_namespace = "Microsoft.Network/applicationGateways"
+    metric_name      = "TotalRequests"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 10
+    skip_metric_validation  = true
+   
+  
+  
+}
+}
+
+
+
+
