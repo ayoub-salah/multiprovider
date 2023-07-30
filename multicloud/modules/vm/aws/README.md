@@ -126,13 +126,31 @@ Remember to adapt these properties according to your needs. For example, you may
 The outputs of this Terraform module include `instance_ids`, which is a map associating the names of the instances to their respective IDs. This output can be used for further configurations or as an input to other resources or modules.
 
 ## Outputs
+Outputs
+The following outputs are available from this module:
+<h2>Outputs</h2>
+
+<p>The following outputs are available from this module:</p>
+
 <table>
   <tr>
     <th>Name</th>
     <th>Description</th>
+    <th>Type</th>
   </tr>
   <tr>
-    <td>instance_ids</td>
-    <td>A map that provides the IDs of the created instances, mapped by their respective names.</td>
+    <td>vm_ids</td>
+    <td>A map that provides the IDs of the created VMs, mapped by their respective names.</td>
+    <td>Map</td>
+  </tr>
+  <tr>
+    <td>public_ip_addresses</td>
+    <td>A map that provides the public IP addresses of the created VMs, mapped by their respective names.</td>
+    <td>Map</td>
+  </tr>
+  <tr>
+    <td>private_ip_addresses</td>
+    <td>A map that provides the private IP addresses of the created VMs, mapped by their respective names.</td>
+    <td>Map</td>
   </tr>
 </table>
