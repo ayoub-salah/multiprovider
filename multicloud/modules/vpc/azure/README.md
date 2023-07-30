@@ -78,6 +78,7 @@ In the above example, we are using the vpcs variable to define two VPC configura
 Remember to customize the VPC configurations according to your requirements.
 
 Outputs
+#######
 This module will provide the following outputs:
 
 <table>
@@ -92,6 +93,8 @@ This module will provide the following outputs:
     <td>Map of Strings</td>
   </tr>
 </table>
+
+
 You can access this output in your Terraform configuration using module.<module-name>.vpc_ids, where <module-name> is the name you've given to the module block in your configuration. For example, if your VPC module is named my_vpc, you would access the output with module.my_vpc.vpc_ids. This map can be useful when configuring resources that need to refer to these VPCs by their Azure resource ID.
 
 With this updated README, your Azure VPC module documentation should be more comprehensive and easier to understand, allowing your team members to use it effectively in your multi-cloud project.
