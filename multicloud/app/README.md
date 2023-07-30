@@ -159,8 +159,10 @@ For any further clarifications or modifications, feel free to raise an issue or 
 
 Happy Terraforming!
 
-Azure Terraform Modules - Root Module
+# Azure Terraform Modules - Root Module
+
 This repository contains modules for deploying a multi-tier infrastructure on Microsoft Azure using Terraform.
+
 
 Azure Virtual Networks (VPC)
 To create Azure Virtual Networks (VPCs) with customizable configurations, use the following block in your Terraform main configuration file (main.tf). Don't forget to change the variables according to your requirements.
