@@ -2,56 +2,15 @@
 This Terraform module is used to create Azure Virtual Networks (VPCs). It supports creating multiple VPCs with configurable attributes such as address space and resource group.
 
 ## Variables
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td>vpcs</td>
-    <td>A map of VPC configurations</td>
-    <td>map(object)</td>
-    <td>N/A</td>
-  </tr>
-</table>
+### vpcs
+A map of VPC configurations.
 
-### The VPC Map contains the following variables:
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-    <th>Default</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-    <td>name</td>
-    <td>The name of the VPC</td>
-    <td>String</td>
-    <td>N/A</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>address_space</td>
-    <td>The address space for the VPC (e.g., "10.0.0.0/16")</td>
-    <td>List of Strings</td>
-    <td>N/A</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>resource_group_name</td>
-    <td>The name of the resource group to which the VPC belongs</td>
-    <td>String</td>
-    <td>N/A</td>
-    <td>Yes</td>
-  </tr>
-</table>
+| Name                 | Description                                            | Type       | Default | Required |
+|----------------------|--------------------------------------------------------|------------|---------|----------|
+| resource_group_name  | The name of the resource group where the VPC will be created. | String     | N/A     | Yes      |
+| address_space        | A list of address spaces to be used by the VPC.        | List       | N/A     | Yes      |
 
 ## Usage
-
 To utilize this module, include the following block in your Terraform configuration:
 
 ```hcl
@@ -62,14 +21,12 @@ module "my_vpc" {
   # VPCs Input
   vpcs = {
     "vpc1" = {
-      name                = "my-vpc-1"
+      resource_group_name = "my_resource_group"
       address_space       = ["10.0.0.0/16"]
-      resource_group_name = "my-resource-group"
     },
     "vpc2" = {
-      name                = "my-vpc-2"
+      resource_group_name = "my_resource_group"
       address_space       = ["192.168.0.0/16"]
-      resource_group_name = "my-resource-group"
     }
   }
 }
@@ -78,21 +35,9 @@ In the above example, we are using the vpcs variable to define two VPC configura
 Remember to customize the VPC configurations according to your requirements.
 
 Outputs
-#######
 This module will provide the following outputs:
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  <tr>
-    <td>vpc_ids</td>
-    <td>A map linking the name of each VPC to its Azure resource ID</td>
-    <td>Map of Strings</td>
-  </tr>
-</table>
+vpc_names
+A map of VPC names.
 
-
-
+You can access this output in your Terraform configuration using module.<module-name>.vpc_names, where <module-name> is the name you've given to the module block in your configuration. For example, if your VPC module is named my_vpc, you would access the output with module.my_vpc.vpc_names.
