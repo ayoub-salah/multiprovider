@@ -187,24 +187,25 @@ module "azure_vpc" {
   source = "path/to/azure/modules/vpc"
 
   # VPCs Input
-  vpcs = {
-    "vpc1" = {
-      name = "vpc1"
-      address_space = ["10.0.0.0/16"]
-      resource_group_name = "my_rg1"
-    },
-    "vpc2" = {
-      name = "vpc2"
-      address_space = ["10.1.0.0/16"]
-      resource_group_name = "my_rg2"
-    },
-    "vpc3" = {
-      name = "vpc3"
-      address_space = ["10.2.0.0/16"]
-      resource_group_name = "my_rg3"
-    }
+ ```hcl
+vpcs = {
+  "vpc1" = {
+    name = "vpc1"
+    address_space = ["10.0.0.0/16"]
+    resource_group_name = "my_rg1"
+  },
+  "vpc2" = {
+    name = "vpc2"
+    address_space = ["10.1.0.0/16"]
+    resource_group_name = "my_rg2"
+  },
+  "vpc3" = {
+    name = "vpc3"
+    address_space = ["10.2.0.0/16"]
+    resource_group_name = "my_rg3"
   }
 }
+
 Azure Subnets
 # Subnet module call
 module "azure_subnet" {
