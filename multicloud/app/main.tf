@@ -331,8 +331,142 @@ resource "azurerm_monitor_metric_alert" "metric" {
     operator         = "GreaterThan"
     threshold        = 10
     skip_metric_validation  = true
-   
-  
   
 }
+}
+
+module "vpc_aws" {
+  source  = "../modules/vpc/aws"
+  vpcs = {
+    vpc1 = {cidr_block = ["192.168.1.0/24"]},
+    vpc2 = {cidr_block = ["192.168.2.0/24"]},
+    vpc3 = {cidr_block = ["192.168.3.0/24"]},
+  }
+}
+
+module "subnets_public_aws" {
+  source  = "../modules/subnets/aws"
+  //internet_gateway_id = module.vpc_aws[0].internet_gateway_ids[var.vpc_id]
+  vpc_ids = module.vpc_aws.vpc_ids
+  internet_gateway_ids = module.vpc_aws.internet_gateway_ids
+  route_ids = module.vpc_aws.route_table_ids
+  subnets = {
+    public_subnet_1  = { cidr_block = ["192.168.1.0/26"], availability_zone = "us-east-1a", map_public_ip = true, vpc_name = "vpc1" },
+    public_subnet_2  = { cidr_block = ["192.168.1.64/26"], availability_zone = "us-east-1b", map_public_ip = true, vpc_name = "vpc1"},
+
+  }
+}
+
+module "subnets_private_aws" {
+  source  = "../modules/subnets/aws"
+  vpc_ids = module.vpc_aws.vpc_ids
+  internet_gateway_ids = module.vpc_aws.internet_gateway_ids
+  route_ids = module.vpc_aws.route_table_ids
+  subnets = {
+    private_subnet_1  = { cidr_block = ["192.168.1.128/26"], availability_zone = "us-east-1a", map_public_ip = false, vpc_name = "vpc1" },
+    private_subnet_2  = { cidr_block = ["192.168.1.192/26"], availability_zone = "us-east-1b", map_public_ip = false, vpc_name = "vpc1"},
+  }
+}
+
+resource "aws_eip" "this" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.this.id
+  subnet_id     = module.subnets_public_aws.subnet_ids["public_subnet_1"]
+
+}
+
+//**************************************************************
+
+resource "aws_route_table" "route_table_private_1" {
+  vpc_id = module.vpc_aws.vpc_ids["vpc1"]
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gateway.id
+  }
+}
+
+resource "aws_route_table_association" "private_1" {
+  subnet_id      = module.subnets_private_aws.subnet_ids["private_subnet_1"]
+  route_table_id = aws_route_table.route_table_private_1.id
+}
+
+resource "aws_route_table_association" "private_2" {
+  subnet_id      = module.subnets_private_aws.subnet_ids["private_subnet_2"]
+  route_table_id = aws_route_table.route_table_private_1.id
+}
+
+//*****************************************************************
+
+
+module "vms_aws" {
+  source = "../modules/vm/aws"
+  vpc_name = "vpc1"
+  vpc_ids = module.vpc_aws.vpc_ids
+  subnet_ids = module.subnets_private_aws.subnet_ids
+  instances = {
+    instance_1 = { ami = "ami-022e1a32d3f742bd8", instance_type = "t2.micro", subnet_name = "private_subnet_1", public_ip = false, ports = [22,80,443] },
+    instance_2 = { ami = "ami-022e1a32d3f742bd8", instance_type = "t2.micro", subnet_name = "private_subnet_1", public_ip = false, ports = [22,80,443] },
+  }
+  depends_on = [
+    aws_route_table.route_table_private_1
+  ]
+}
+
+
+
+//********************************************************************
+resource "aws_lb" "alb_1" {
+  name               = "ayoub-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups      = [module.vms_aws.security_group_ids["instance_1"]]
+  subnets            = [module.subnets_public_aws.subnet_ids["public_subnet_1"] , module.subnets_public_aws.subnet_ids["public_subnet_2"]]
+}
+
+resource "aws_lb_target_group" "target_group_1" {
+  name     = "TargetGroup1"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = module.vpc_aws.vpc_ids["vpc1"]
+
+  health_check {
+    enabled             = true
+    interval            = 120
+    path                = "/"
+    port                = "traffic-port"
+    timeout             = 119
+    healthy_threshold   = 10
+    unhealthy_threshold = 10
+  }
+}
+
+resource "aws_lb_listener" "listener_1" {
+  load_balancer_arn = aws_lb.alb_1.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group_1.arn
+  }
+}
+
+resource "aws_lb_target_group_attachment" "target_group_attachment_1" {
+  target_group_arn = aws_lb_target_group.target_group_1.arn
+  target_id        = module.vms_aws.instance_ids["instance_1"]
+  port             = 80
+}
+
+resource "aws_lb_target_group_attachment" "target_group_attachment_2" {
+  target_group_arn = aws_lb_target_group.target_group_1.arn
+  target_id        = module.vms_aws.instance_ids["instance_2"]
+  port             = 80
+}
+
+output "alb_dns" {
+  value = aws_lb.alb_1.dns_name
 }
