@@ -205,7 +205,7 @@ vpcs = {
     resource_group_name = "my_rg3"
   }
 }
-
+```hcl
 Azure Subnets
 # Subnet module call
 module "azure_subnet" {
@@ -228,6 +228,7 @@ module "azure_subnet" {
 }
 Azure VMs
 # VM module call
+```hcl
 module "azure_vms" {
   source = "path/to/azure/modules/vm"
   depends_on = [module.azure_vpc, module.azure_subnet] # This module starts after the VPC & Subnet modules finish executing
@@ -264,6 +265,7 @@ module "azure_vms" {
 }
 
 # Output of the VMs Public IPs
+```hcl
 output "azure_vm_ip_out" {
   value = module.azure_vms.vm_public_ips
 }
