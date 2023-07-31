@@ -48,4 +48,5 @@ resource "aws_instance" "this" {
   tags = {
     Name = each.key
   }
+depends_on = [ aws_key_pair.deployer ]
 }
