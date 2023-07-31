@@ -5,8 +5,8 @@ provider "google" {
 }
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIA2FTTSXCQAHLVADNP"
-  secret_key = "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"
+  access_key = "AKIAXHICZURJCZUJB67O"
+  secret_key = "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"
 }
 provider "azurerm" {
   # Configuration options
