@@ -10,7 +10,7 @@ resource "aws_subnet" "this" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each      = var.subnets
+  for_each      = { for name, subnet in var.subnets : name => subnet if subnet.map_public_ip }
   
   subnet_id     = aws_subnet.this[each.key].id
   route_table_id = var.route_ids[each.value.vpc_name]
